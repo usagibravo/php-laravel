@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\News; // for use of model class News
+use Illuminate\Support\Facades\Storage;
 
 class NewsController extends Controller
 {
@@ -26,6 +27,7 @@ class NewsController extends Controller
         $form = $request->all();
         
         if (isset($form['image'])) {
+            //var_dump($request->file('image'));
             $path = $request->file('image')->store('public/image');
             $news->image_path = basename($path);
         } else {
@@ -41,6 +43,68 @@ class NewsController extends Controller
         $news->save();
         
         // admin/news/createにリダイレクトする
-        return redirect('admin/news/create');
+        return redirect('admin/news');
+    }
+    
+    public function index(Request $request) {
+        
+        $cond_title = $request->cond_title;
+        //var_dump($request->cond_title);
+        if ($cond_title != '') {
+            $posts = News::where('title', $cond_title)->get();
+        //var_dump($posts);
+        } else {
+            $posts = News::all();
+        }
+        
+        return view('admin.news.index', ['posts' => $posts, 'cond_title' => $cond_title]);
+    }
+
+    public function edit(Request $request) {
+        $news = News::find($request->id);
+        //var_dump($news);
+        if (empty($news)) {
+            abort(404);
+        }
+        return view('admin.news.edit', ['news_form' => $news]);
+    }
+    
+    public function update(Request $request) {
+        $this->validate($request, News::$rules);
+        
+        $news = News::find($request->id);
+        
+        $news_form = $request->all();
+
+        if($request->remove == 'true') {
+            //dd(Storage::Allfiles('public/image'));
+            Storage::delete('public/image/' . $news->image_path);
+            $news_form['image_path'] = null;
+        } elseif ($request->file('image')) {
+            var_dump($request->file('image'));
+            $path = $request->file('image')->store('public/image');
+            $news_form['image_path'] = basename($path);
+        } else {
+            $news_form['image_path'] = $news->image_path;
+        }
+        
+        unset($news_form['image']);
+        unset($news_form['remove']);
+        unset($news_form['_token']);
+        
+        $news->fill($news_form)->save();
+        
+        return redirect('admin/news');
+    }
+    
+    public function delete(Request $request) {
+        $news = News::find($request->id);
+        if (isset($news->image_path)) {
+            Storage::delete('public/image/' . $news->image_path);
+        }
+        $news->delete();
+        
+        Return redirect('admin/news/');
+        
     }
 }

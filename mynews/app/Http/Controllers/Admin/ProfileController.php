@@ -30,18 +30,34 @@ class ProfileController extends Controller
         // store all data in news table
         $profile->fill($form);
         $profile->save();
-        dd($form);
+        //dd($form);
         
         return redirect('admin/profile/create');
     }
 
-    public function edit()
+    public function edit(Request $request)
     {
-        return view('admin.profile.edit');
+        $profile = Profile::find($request->id);
+        //var_dump($profile);
+        if (empty($profile)) {
+            abort('404');
+        }
+        return view('admin.profile.edit', ['profile_form' => $profile]);
     }
 
-    public function update()
+    public function update(Request $request)
     {
-        return redirect('admin/profile/edit');
+        $this->validate($request, Profile::$rules);
+        //var_dump($request->all());
+        
+        $profile = Profile::find($request->id);
+
+        $profile_form = $request->all();
+
+        unset($profile_form['_token']);
+        
+        $profile->fill($profile_form)->save();
+
+        return view('admin.profile.edit', ['profile_form' => $profile]);
     }
 }
