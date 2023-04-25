@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Models\Profile; // for use of model class News
+use App\Models\Profile; // for use of model class Profile
+use App\Models\Prof_history;
+use Carbon\Carbon;
 
 class ProfileController extends Controller
 {
@@ -57,6 +59,11 @@ class ProfileController extends Controller
         unset($profile_form['_token']);
         
         $profile->fill($profile_form)->save();
+        
+        $prof_history = new Prof_history();
+        $prof_history->profile_id = $profile->id;
+        $prof_history->edited_at = Carbon::now();
+        $prof_history->save();
 
         return view('admin.profile.edit', ['profile_form' => $profile]);
     }
