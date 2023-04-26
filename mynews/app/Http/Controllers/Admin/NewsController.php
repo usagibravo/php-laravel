@@ -60,6 +60,8 @@ class NewsController extends Controller
             $posts = News::all();
         }
         
+        //\Debugbar::info('デバッガーの情報ですよ');
+        
         return view('admin.news.index', ['posts' => $posts, 'cond_title' => $cond_title]);
     }
 

@@ -33,7 +33,7 @@ class ProfileController extends Controller
         $profile->fill($form);
         $profile->save();
         //dd($form);
-        
+        //\Debugbar::info($form);
         return redirect('admin/profile/create');
     }
 

@@ -24,9 +24,9 @@
                     <div class="form-group row">
                         <label class="col-md-2">性別</label>
                         <div class="col-md-10 form-check">
-                            <input type="radio" class="form-check-inline" name="gender" value="M" {{ old('gender') == 'M' ? 'checked' : '' }}>男性
-                            <input type="radio" class="form-check-inline" name="gender" value="F" {{ old('gender') == 'F' ? 'checked' : '' }}>女性
-                            <input type="radio" class="form-check-inline" name="gender" value="U" {{ old('gender') == 'U' ? 'checked' : '' }}>無回答
+                            <input type="radio" class="form-check-inline" name="gender" value="男性" {{ old('gender') == '男性' ? 'checked' : '' }}>男性
+                            <input type="radio" class="form-check-inline" name="gender" value="女性" {{ old('gender') == '女性' ? 'checked' : '' }}>女性
+                            <input type="radio" class="form-check-inline" name="gender" value="無回答" {{ old('gender') == '無回答' ? 'checked' : '' }}>無回答
                             
                         </div>
                     </div>
